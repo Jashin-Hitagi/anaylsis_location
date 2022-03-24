@@ -1,6 +1,7 @@
 package com.tool.demo.phone;
 
 
+import com.tool.demo.tool.AreaList;
 import lombok.Data;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
@@ -161,6 +162,10 @@ public class PhoneNumberGeo {
                 String[] infoSegments = infoString.split("\\|");
 
                 Info phoneNumberInfo = new Info();
+                phoneNumberInfo.setCountry("");
+                if (AreaList.CHINESE_PROVINCE_LIST.contains(infoSegments[0])){
+                    phoneNumberInfo.setCountry("中国");
+                }
                 phoneNumberInfo.setPhoneNumber(phoneNumber);
                 phoneNumberInfo.setProvince(infoSegments[0]);
                 phoneNumberInfo.setCity(infoSegments[1]);
@@ -182,5 +187,6 @@ public class PhoneNumberGeo {
         private String zipCode;
         private String areaCode;
         private String phoneType;
+        private String country;
     }
 }

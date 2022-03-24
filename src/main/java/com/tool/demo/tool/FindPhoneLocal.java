@@ -10,7 +10,7 @@ public class FindPhoneLocal {
 
     public static void main(String[] args) {
         PhoneNumberGeo phoneNumberGeo = new PhoneNumberGeo();
-        System.out.println(phoneNumLookUp(phoneNumberGeo,"+8616761732244"));
+        System.out.println(phoneNumLookUp(phoneNumberGeo,"+8613000311234"));
     }
 
     public static String phoneNumLookUp(PhoneNumberGeo phoneNumberGeo, String number) {
@@ -19,7 +19,7 @@ public class FindPhoneLocal {
             if (info == null) {
                 return null;
             }
-            return String.format("%s%s", info.getProvince(), info.getCity());
+            return String.format("%s%s%s", info.getCountry(),info.getProvince(), info.getCity());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -16,8 +16,6 @@ public class IPSeeker {
      * <pre>
      * 用来封装ip相关信息，目前只有两个字段，ip所在的国家和地区
      * </pre>
-     *
-     * @author 马若劼, 刘亚壮
      */
     private class IPLocation {
         public String country;
@@ -60,7 +58,6 @@ public class IPSeeker {
 
     /**
      * 无参单例实例
-     * @author 刘亚壮
      * @return
      */
     public static IPSeeker getInstance(){
@@ -76,8 +73,6 @@ public class IPSeeker {
 
     /**
      * 有参单例实例
-     * @author 刘亚壮
-     * @param ip地址库.dat文件的路径
      * @return
      */
     public static IPSeeker getInstance(String ipFilePath){
@@ -127,7 +122,6 @@ public class IPSeeker {
 
     /**
      * 新增有参私有构造函数
-     * @author 刘亚壮
      */
     private IPSeeker(String ipFilePath) {
         ipCache = new Hashtable();

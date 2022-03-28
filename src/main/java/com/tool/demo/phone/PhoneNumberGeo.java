@@ -27,9 +27,11 @@ public class PhoneNumberGeo {
     private static final int DATA_FILE_LENGTH_HINT = 3747505;
     private static final String PHONE_DAT_FILE_PATH = "phone.dat";
     private static final String STATIC_PHONE_DAT_FILE_PATH = "static-phone.dat";
+    private static final String COUNTRY_PHONE_DAT_FILE_PATH = "country-phone.dat";
 
     private static byte[] dataByteArray;
     private static Map<String, Info> staticData;
+    private static Map<String, Info> countryData;
     private static int indexAreaOffset;
     private static int phoneRecordCount;
 
@@ -75,7 +77,22 @@ public class PhoneNumberGeo {
                     Info info = new Info();
                     info.setProvince(pc[0]);
                     info.setCity(pc[1]);
+                    info.setCountry("中国");
                     staticData.put(pc[2], info);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        countryData = new HashMap<>();
+        BufferedReader countryReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(PhoneNumberGeo.class.getClassLoader().getResourceAsStream(COUNTRY_PHONE_DAT_FILE_PATH))));
+        try {
+            while ((line = countryReader.readLine()) != null) {
+                if (StringUtils.isNoneBlank(line)) {
+                    String[] pc = line.split("\t");
+                    Info info = new Info();
+                    info.setCountry(pc[0]);
+                    countryData.put(pc[1], info);
                 }
             }
         } catch (IOException e) {
@@ -102,19 +119,26 @@ public class PhoneNumberGeo {
         if (phoneNum.startsWith("+86")) {
             phoneNum = phoneNum.substring(3);
             phoneNum = phoneNum.replaceAll("\\s|-", "");
-        }
-
-        if (phoneNum.startsWith("86")) {
+        }else if (phoneNum.startsWith("86")) {
             phoneNum = phoneNum.substring(2);
             phoneNum = phoneNum.replaceAll("\\s|-", "");
-        }
-
-        if (phoneNum.startsWith("0")) {
+        }else if (phoneNum.startsWith("0")) {
             Optional<String> st = staticData.keySet().stream().filter(phoneNum::startsWith).findFirst();
             if (st.isPresent()) {
                 Info info = BeanCopyUtil.copyProperties(staticData.get(st.get()), Info.class);
                 info.setPhoneNumber(phoneNumber);
                 info.setPhoneType("固定电话");
+                return info;
+            } else {
+                return null;
+            }
+        }else {
+            phoneNum = phoneNum.replace("+", "").trim();
+            Optional<String> st = countryData.keySet().stream().filter(phoneNum::startsWith).findFirst();
+            if (st.isPresent()) {
+                Info info = BeanCopyUtil.copyProperties(countryData.get(st.get()), Info.class);
+                info.setPhoneNumber(phoneNumber);
+                info.setPhoneType("国际电话");
                 return info;
             } else {
                 return null;

@@ -19,7 +19,9 @@ public class FindPhoneLocal {
             if (info == null) {
                 return null;
             }
-            return String.format("%s%s%s", info.getCountry(),info.getProvince(), info.getCity());
+            return String.format("%s%s%s", info.getCountry()==null?"":info.getCountry(),
+                    info.getProvince()==null?"":info.getProvince(),
+                    info.getCity()==null?"":info.getCity());
         } catch (Exception e) {
             e.printStackTrace();
         }

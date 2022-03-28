@@ -1,14 +1,13 @@
 package com.tool.demo.ip;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import cn.hutool.core.io.IoUtil;
 
 public class IPSeeker {
 
@@ -33,7 +32,7 @@ public class IPSeeker {
         }
     }
 
-    private static final String IP_FILE = IPSeeker.class.getResource("/qqwry.dat").toString().substring(6);
+    private static final String IP_FILE = IPSeeker.class.getResource("/qqwry.dat").getFile();
 
     // 一些固定常量，比如记录长度等等
     private static final int IP_RECORD_LENGTH = 7;
@@ -96,8 +95,13 @@ public class IPSeeker {
         b4 = new byte[4];
         b3 = new byte[3];
         try {
-            ipFile = new RandomAccessFile(IP_FILE, "r");
-        } catch (FileNotFoundException e) {
+            File tmpFile = File.createTempFile("ipFileTmp", "dat");
+            tmpFile.deleteOnExit();
+            InputStream is = IPSeeker.class.getClassLoader().getResourceAsStream("qqwry.dat");
+            OutputStream os = new FileOutputStream(tmpFile);
+            IoUtil.copy(is,os,4096);
+            this.ipFile = new RandomAccessFile(tmpFile.getAbsolutePath(), "r");
+        } catch (IOException e) {
             System.out.println(IPSeeker.class.getResource("/qqwry.dat").toString());
             System.out.println(IP_FILE);
             System.out.println("IP地址信息文件没有找到，IP显示功能将无法使用");
